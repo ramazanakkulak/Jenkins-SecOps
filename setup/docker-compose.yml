@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: docker-devops-spring-app${version:-1.0.0}
+    build:
+      context: ./../
+      dockerfile: backend-service.dockerfile
+    restart: always
+    labels:
+      maintener: ramazanakkulak
+      description: Spring Boot App
+      project: Spring Boot and Postgres
+      version: 1.0.0
+      type: backend
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgresqldb
+    networks:
+      - devops_project
+    deploy:
+        mode: replicated
+        replicas: 1
+
+  postgresqldb:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: postgres
+    volumes:
+      - postgresqldb_data:/var/lib/postgresql/data
+    networks:
+      - devops_project
+    deploy:
+        mode: replicated
+        replicas: 1
+
+networks:
+  devops_project:
+    name: devops_project
+
+volumes:
+  postgresqldb_data:
+    driver: local
