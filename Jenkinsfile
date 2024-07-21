@@ -4,6 +4,7 @@ pipeline {
     environment {
         // Ortak ortam değişkenleri burada tanımlanabilir
         DOCKER_IMAGE = "spring-boot-app:${env.BUILD_NUMBER}"
+        DOCKER_REPOSITORY_NAME = "spring-boot-app"
     }
 
     stages {
@@ -34,7 +35,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
                         sh "echo ${dockerHubPassword} | docker login -u ${dockerHubUser} --password-stdin"
-                        sh "docker push ${dockerHubUser}/${DOCKER_IMAGE}"
+                        sh "docker push ${dockerHubUser}/${DOCKER_REPOSITORY_NAME}:${env.BUILD_NUMBER}"
                         sh 'docker logout'
                     }
                 }
