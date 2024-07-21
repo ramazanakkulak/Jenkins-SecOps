@@ -25,7 +25,7 @@ pipeline {
 
         stage('Dependency Check - SYNK SCAN') {
             steps {
-               sscript {
+               script {
                     // Run Snyk test
                     sh 'snyk auth ${SNYK_TOKEN}'
                     sh 'snyk test'
