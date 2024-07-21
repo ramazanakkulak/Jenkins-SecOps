@@ -25,33 +25,33 @@ pipeline {
         stage('Dependency Check - SYNK SCAN') {
             steps {
                script {
-                   withCredentials([string(credentialsId: 'synk-api-token', variable: 'SNYK_TOKEN')]) {
+                   withCredentials([string(credentialsId: 'synk-api-token', SNYK_TOKEN: 'SNYK_TOKEN')]) {
                        sh "snyk test --token=${SNYK_TOKEN}"
                    }
                }
            }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                script {
-                    docker.build("${DOCKER_IMAGE}", "-f backend-service.dockerfile .")
-                }
-            }
-        }
+        // stage('Build Docker Image') {
+        //     steps {
+        //         script {
+        //             docker.build("${DOCKER_IMAGE}", "-f backend-service.dockerfile .")
+        //         }
+        //     }
+        // }
 
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-                        sh "echo ${dockerHubPassword} | docker login -u ${dockerHubUser} --password-stdin"
-                        sh "docker tag ${DOCKER_IMAGE} ${dockerHubUser}/${DOCKER_REPOSITORY_NAME}:${BUILD_NUMBER}"
-                        sh "docker push ${dockerHubUser}/${DOCKER_REPOSITORY_NAME}:${BUILD_NUMBER}"
-                        sh 'docker logout'
-                    }
-                }
-            }
-        }
+        // stage('Push Docker Image') {
+        //     steps {
+        //         script {
+        //             withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+        //                 sh "echo ${dockerHubPassword} | docker login -u ${dockerHubUser} --password-stdin"
+        //                 sh "docker tag ${DOCKER_IMAGE} ${dockerHubUser}/${DOCKER_REPOSITORY_NAME}:${BUILD_NUMBER}"
+        //                 sh "docker push ${dockerHubUser}/${DOCKER_REPOSITORY_NAME}:${BUILD_NUMBER}"
+        //                 sh 'docker logout'
+        //             }
+        //         }
+        //     }
+        // }
         // stage('Deploy') {
         //     steps {
         //         // Docker-compose kullanarak uygulamanın dağıtılması
