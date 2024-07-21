@@ -26,12 +26,12 @@ pipeline {
             steps {
                script {
                    withCredentials([string(credentialsId: 'synk-api-token', variable: 'SNYK_TOKEN')]) {
-                       sh 'snyk test --token=$SNYK_TOKEN'
+                       sh "snyk test --token=${SNYK_TOKEN}"
                    }
                }
            }
         }
-        
+
         stage('Build Docker Image') {
             steps {
                 script {
