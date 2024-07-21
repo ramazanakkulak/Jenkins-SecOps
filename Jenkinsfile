@@ -34,7 +34,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
                         sh "echo ${dockerHubPassword} | docker login -u ${dockerHubUser} --password-stdin"
-                        sh "docker push ${dockerHubUser}/${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+                        sh "docker push ${dockerHubUser}/${DOCKER_IMAGE}"
                         sh 'docker logout'
                     }
                 }
