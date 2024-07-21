@@ -5,7 +5,6 @@ pipeline {
         // Ortak ortam değişkenleri burada tanımlanabilir
         DOCKER_IMAGE = "spring-boot-app:${env.BUILD_NUMBER}"
         DOCKER_REPOSITORY_NAME = "spring-boot-app"
-        SNYK_TOKEN = credentials('snyk-api-token')
     }
 
     stages {
@@ -26,10 +25,10 @@ pipeline {
         stage('Dependency Check - SYNK SCAN') {
             steps {
                script {
-                    // Run Snyk test
-                    sh 'snyk auth ${SNYK_TOKEN}'
-                    sh 'snyk test'
-                }
+                   withCredentials([string(credentialsId: 'snyk-api-token', variable: 'SNYK_TOKEN')]) {
+                       sh 'snyk test --token=$SNYK_TOKEN'
+                   }
+               }
 
            }
         }
