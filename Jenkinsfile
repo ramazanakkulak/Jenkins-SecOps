@@ -33,7 +33,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-                        sh "docker login -u ${dockerHubUser} --password-stdin"
+                        sh "docker login -u ${dockerHubUser} -p ${dockerHubPassword} --password-stdin"
                         sh "docker push ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
                         sh 'docker logout'
                     }
