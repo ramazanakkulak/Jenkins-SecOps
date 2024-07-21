@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         // Ortak ortam değişkenleri burada tanımlanabilir
-        DOCKER_IMAGE = "myapp:${env.BUILD_NUMBER}"
+        DOCKER_IMAGE = "spring-boot-app:${env.BUILD_NUMBER}"
     }
 
     stages {
@@ -29,18 +29,18 @@ pipeline {
             }
         }
 
-        // stage('Push Docker Image') {
-        //     steps {
-        //         script {
-        //             withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
-        //                 sh 'echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin'
-        //                 sh "docker tag ${DOCKER_IMAGE} ${DOCKER_HUB_USERNAME}/myapp:${env.BUILD_NUMBER}"
-        //                 sh "docker push ${DOCKER_HUB_USERNAME}/myapp:${env.BUILD_NUMBER}"
-        //                 sh 'docker logout'
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: DOCKER_HUB_CREDENTIALS, passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
+                        sh 'echo $DOCKER_HUB_PASSWORD | docker login -u $DOCKER_HUB_USERNAME --password-stdin'
+                        sh "docker tag ${DOCKER_IMAGE}:${env.BUILD_NUMBER} ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+                        sh "docker push ${DOCKER_HUB_USERNAME}/${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+                        sh 'docker logout'
+                    }
+                }
+            }
+        }
 
         // stage('Deploy') {
         //     steps {
