@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+trivy_result.txt
+hadolint_result.txt

@@ -22,6 +22,16 @@ pipeline {
             }
         }
 
+        stage('Dependency Check - SYNK SCAN') {
+            steps {
+               script {
+                   withCredentials([string(credentialsId: 'synk-api-token', variable: 'SNYK_TOKEN')]) {
+                       sh 'snyk test --token=$SNYK_TOKEN'
+                   }
+               }
+           }
+        }
+        
         stage('Build Docker Image') {
             steps {
                 script {
@@ -42,7 +52,6 @@ pipeline {
                 }
             }
         }
-
         // stage('Deploy') {
         //     steps {
         //         // Docker-compose kullanarak uygulamanın dağıtılması

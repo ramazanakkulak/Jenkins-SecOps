@@ -1,0 +1,20 @@
+timeout: 10m
+format: table
+dependency-tree: true
+list-all-pkgs: true
+exit-code: 1
+output: trivy_result.txt
+severity:
+  - HIGH
+  - CRITICAL
+scan:
+  security-checks:
+    - vuln
+    - secret
+vulnerability:
+  type:
+    - os
+    - library
+  ignore-unfixed: true
+db:
+  skip-update: false
