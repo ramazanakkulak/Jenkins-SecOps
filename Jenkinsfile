@@ -27,9 +27,10 @@ pipeline {
                script {
                    withCredentials([string(credentialsId: 'snyk-api-token', variable: 'SNYK_TOKEN')]) {
                         // Authenticate with Snyk
-                        sh 'snyk auth ${SNYK_TOKEN}'
+                        echo ${SNYK_TOKEN}
+                        sh "snyk auth ${SNYK_TOKEN}"
                         // Run Snyk test
-                        sh 'snyk test'
+                        sh "snyk test"
                     }
                }
            }
