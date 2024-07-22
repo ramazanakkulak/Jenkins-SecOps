@@ -49,10 +49,10 @@ pipeline {
         }
 
         stage('SAST - SonarQube') {
-            steps {
-                environment {
+            environment {
                     scannerHome = tool 'sonarscanner'
                 }
+            steps {
                 withSonarQubeEnv('SonarQubeSecret') {
                     sh "${scannerHome}/bin/sonar-scanner \
                         -Dsonar.dependencyCheck.summarize=true \
