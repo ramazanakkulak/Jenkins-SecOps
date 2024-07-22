@@ -14,11 +14,23 @@ pipeline {
                 checkout scm
             }
         }
-        
+        stage('Test') {
+            steps {
+                // Maven ile projenin derlenmesi ve testlerin çalıştırılması
+                sh 'mvn test'
+            }
+            post {
+              always {
+                junit 'target/surefire-reports/*.xml'
+                jacoco execPattern: 'target/jacoco.exec'
+           }
+        }
+
         stage('Build') {
             steps {
                 // Maven ile projenin derlenmesi ve testlerin çalıştırılması
                 sh 'mvn clean package -DskipTests'
+                archiveArtifacts 'target/*.jar'
             }
         }
 
@@ -26,7 +38,7 @@ pipeline {
             steps {
                script {
                    withCredentials([string(credentialsId: 'snyk-api-token-secret', variable: 'SNYK_TOKEN')]) {
-                       sh 'snyk test --token=$SNYK_TOKEN'
+                       sh 'mvn snyk:test -fn'
                    }
                }
 
