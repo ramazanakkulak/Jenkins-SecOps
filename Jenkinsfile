@@ -49,9 +49,12 @@ pipeline {
         }
 
         stage('SAST - SonarQube') {
+            environment {
+                scannerHome = tool 'Sonar'
+            }
             steps {
                 withSonarQubeEnv('SonarQubeSecret') {
-                    sh "mvn clean verify sonar:sonar \
+                    sh "${scannerHome}/bin/sonar-scanner \
                         -Dsonar.dependencyCheck.summarize=true \
                         -Dsonar.dependencyCheck.xmlReportPath=target/surefire-reports/*.xml \
                         -Dsonar.projectKey=devops_project \
