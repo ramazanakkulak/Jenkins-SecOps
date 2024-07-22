@@ -52,7 +52,6 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('SonarQubeSecret') {
-                        sh "mvn clean verify sonar:sonar -Dsonar.projectKey=devops_project -Dsonar.projectName='devops_project' -Dsonar.host.url=http://localhost:9000"
                         sh "mvn clean verify sonar:sonar \
                             -Dsonar.dependencyCheck.summarize=true \
                             -Dsonar.dependencyCheck.xmlReportPath=target/surefire-reports/*.xml \
