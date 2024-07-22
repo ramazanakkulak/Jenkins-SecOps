@@ -14,7 +14,8 @@ pipeline {
                 checkout scm
             }
         }
-        stage('Test') {
+
+        stage('JTest') {
             steps {
                 // Maven ile projenin derlenmesi ve testlerin çalıştırılması
                 sh 'mvn test'
@@ -35,32 +36,38 @@ pipeline {
             }
         }
 
-        stage('SCA - Snyk Scan') {
-            steps {
-               script {
-                   echo 'Testing...'
-                    snykSecurity(
-                        snykInstallation: 'Snyk',
-                        snykTokenId: 'snyk-api-token',
-                        // place other parameters here
-                    )
-               }
-           }
-        }
-
-        stage('SAST - SonarQube') {
-            environment {
-                    scannerHome = tool 'SonarQube'
+        stage('Security Scans') {
+            parallel {
+                stage('SCA - Snyk Scan') {
+                    steps {
+                        script {
+                            echo 'Testing...'
+                            snykSecurity(
+                                snykInstallation: 'Snyk',
+                                snykTokenId: 'snyk-api-token'
+                                // place other parameters here
+                            )
+                        }
+                    }
                 }
-            steps {
-                withSonarQubeEnv('sonarqube-server') {
-                    sh "mvn clean verify sonar:sonar \
-                        -Dsonar.dependencyCheck.summarize=true \
-                        -Dsonar.dependencyCheck.xmlReportPath=target/surefire-reports/*.xml \
-                        -Dsonar.projectKey=devops_project \
-                        -Dsonar.projectName='devops_project' \
-                        -Dsonar.host.url=http://localhost:9000"
-                    echo 'SonarQube Analysis Completed'
+
+                stage('SAST - SonarQube') {
+                    environment {
+                        scannerHome = tool 'SonarQube'
+                    }
+                    steps {
+                        withSonarQubeEnv('sonarqube-server') {
+                            sh """
+                                mvn clean verify sonar:sonar \
+                                    -Dsonar.dependencyCheck.summarize=true \
+                                    -Dsonar.dependencyCheck.xmlReportPath=target/surefire-reports/*.xml \
+                                    -Dsonar.projectKey=devops_project \
+                                    -Dsonar.projectName='devops_project' \
+                                    -Dsonar.host.url=http://localhost:9000
+                            """
+                            echo 'SonarQube Analysis Completed'
+                        }
+                    }
                 }
             }
         }
@@ -85,6 +92,7 @@ pipeline {
         //         }
         //     }
         // }
+
         // stage('Deploy') {
         //     steps {
         //         // Docker-compose kullanarak uygulamanın dağıtılması
