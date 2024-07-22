@@ -38,7 +38,6 @@ pipeline {
         stage('Dependency Check - SYNK SCAN') {
             steps {
                snykSecurity(
-                snykInstallation: '24',
                 snykTokenId: 'snyk-api-token',
                 // place other optional parameters here, for example:
                 additionalArguments: '--all-projects'
