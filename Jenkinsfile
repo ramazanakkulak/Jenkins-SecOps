@@ -54,7 +54,7 @@ pipeline {
                 }
             steps {
                 withSonarQubeEnv('sonarqube-server') {
-                    sh "${scannerHome}/bin/sonar-scanner \
+                    sh "mvn clean verify sonar:sonar \
                         -Dsonar.dependencyCheck.summarize=true \
                         -Dsonar.dependencyCheck.xmlReportPath=target/surefire-reports/*.xml \
                         -Dsonar.projectKey=devops_project \
