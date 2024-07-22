@@ -35,7 +35,7 @@ pipeline {
             }
         }
 
-        stage('Dependency Check - SYNK SCAN') {
+        stage('SCA - Snyk Scan') {
             steps {
                script {
                    echo 'Testing...'
@@ -46,6 +46,23 @@ pipeline {
                     )
                }
            }
+        }
+
+        stage('SAST - SonarQube') {
+            steps {
+                script {
+                    withSonarQubeEnv('SonarQubeSecret') {
+                        sh "mvn clean verify sonar:sonar -Dsonar.projectKey=devops_project -Dsonar.projectName='devops_project' -Dsonar.host.url=http://localhost:9000"
+                        sh "mvn clean verify sonar:sonar \
+                            -Dsonar.dependencyCheck.summarize=true \
+                            -Dsonar.dependencyCheck.xmlReportPath=target/surefire-reports/*.xml \
+                            -Dsonar.projectKey=devops_project \
+                            -Dsonar.projectName='devops_project' \
+                            -Dsonar.host.url=http://localhost:9000"
+                        echo 'SonarQube Analysis Completed'
+                    }
+                }
+            }
         }
 
         // stage('Build Docker Image') {
