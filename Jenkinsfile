@@ -38,8 +38,8 @@ pipeline {
         stage('Dependency Check - SYNK SCAN') {
             steps {
                script {
-                   withCredentials([string(credentialsId: 'snyk-api-token-secret', variable: 'SNYK_TOKEN')]) {
-                       sh 'mvn snyk:test -fn'
+                   withCredentials([string(credentialsId: 'snyk-api-token', variable: 'SNYK_TOKEN')]) {
+                       sh 'snyk:test -fn'
                    }
                }
 
