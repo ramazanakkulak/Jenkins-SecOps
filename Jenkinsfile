@@ -50,7 +50,7 @@ pipeline {
 
         stage('SAST - SonarQube') {
             steps {
-                withSonarQubeEnv('SonarQubeSecret') {
+                withSonarQubeEnv('SonarQube') {
                     sh "mvn clean verify sonar:sonar \
                         -Dsonar.dependencyCheck.summarize=true \
                         -Dsonar.dependencyCheck.xmlReportPath=target/surefire-reports/*.xml \
