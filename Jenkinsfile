@@ -38,10 +38,12 @@ pipeline {
         stage('Dependency Check - SYNK SCAN') {
             steps {
                script {
-                   // Run Snyk test
-                   withCredentials([string(credentialsId: 'snyk-api-token', variable: 'SNYK_TOKEN')]) {
-                       sh 'snyk test --token=$SNYK_TOKEN'
-                   }
+                   echo 'Testing...'
+                    snykSecurity(
+                        snykInstallation: 'Snyk',
+                        snykTokenId: 'snyk-api-token',
+                        // place other parameters here
+                    )
                }
            }
         }
