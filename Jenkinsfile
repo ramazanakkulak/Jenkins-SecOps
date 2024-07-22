@@ -37,11 +37,12 @@ pipeline {
 
         stage('Dependency Check - SYNK SCAN') {
             steps {
-               script {
-                   withCredentials([string(credentialsId: 'snyk-api-token', variable: 'SNYK_TOKEN')]) {
-                       sh "echo ${SNYK_TOKEN} | snyk test --token=${SNYK_TOKEN}"
-                   }
-               }
+               snykSecurity(
+                snykInstallation: 'latest',
+                snykTokenId: 'snyk-api-token',
+                // place other optional parameters here, for example:
+                additionalArguments: '--all-projects'
+        )
 
            }
         }
