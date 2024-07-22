@@ -53,7 +53,7 @@ pipeline {
                     scannerHome = tool 'SonarQube'
                 }
             steps {
-                withSonarQubeEnv('SonarQubeSecret') {
+                withSonarQubeEnv('sonarqube-server') {
                     sh "${scannerHome}/bin/sonar-scanner \
                         -Dsonar.dependencyCheck.summarize=true \
                         -Dsonar.dependencyCheck.xmlReportPath=target/surefire-reports/*.xml \
