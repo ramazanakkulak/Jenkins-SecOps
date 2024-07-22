@@ -40,7 +40,7 @@ pipeline {
             steps {
                script {
                    withCredentials([string(credentialsId: 'snyk-api-token', variable: 'SNYK_TOKEN')]) {
-                       sh "snyk test --token=${SNYK_TOKEN}"
+                       sh "echo ${SNYK_TOKEN} | snyk test --token=${SNYK_TOKEN}"
                    }
                }
 
