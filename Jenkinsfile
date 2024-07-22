@@ -50,7 +50,7 @@ pipeline {
 
         stage('SAST - SonarQube') {
             environment {
-                    scannerHome = tool 'sonarqube-server'
+                    scannerHome = tool 'SonarQube'
                 }
             steps {
                 withSonarQubeEnv('SonarQubeSecret') {
