@@ -1,6 +1,2 @@
 trivy_result.txt
 hadolint_result.txt
-venv
-config
-setup
-target
