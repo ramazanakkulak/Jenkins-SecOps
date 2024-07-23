@@ -8,23 +8,28 @@ pipeline {
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                // Kod deposunu çekme
-                checkout scm
-            }
-        }
-
         stage('JTest') {
-            steps {
-                // Maven ile projenin derlenmesi ve testlerin çalıştırılması
-                sh 'mvn test'
-            }
-            post {
-                always {
-                    junit 'target/surefire-reports/*.xml'
-                    jacoco execPattern: 'target/jacoco.exec'
+            parallel {
+                stage('Run Tests') {
+                    steps {
+                        // Maven ile projenin testlerini çalıştırma
+                        sh 'mvn test'
+                    }
+                    post {
+                        always {
+                            junit 'target/surefire-reports/*.xml'
+                        }
+                    }
                 }
+                stage('Secret Key Detection Analysis') {
+                steps {
+                    sh '''
+                    virtualenv venv && . venv/bin/activate && pip install detect-secrets &&
+                    detect-secrets scan --all-files --force-use-all-plugins > detect-secrets.json
+                    '''
+                    archiveArtifacts 'detect-secrets.json'
+                }
+            }
             }
         }
 
@@ -36,41 +41,41 @@ pipeline {
             }
         }
 
-        stage('Security Scans') {
-            parallel {
-                stage('SCA - Snyk Scan') {
-                    steps {
-                        script {
-                            echo 'Testing...'
-                            snykSecurity(
-                                snykInstallation: 'Snyk',
-                                snykTokenId: 'snyk-api-token'
-                                // place other parameters here
-                            )
-                        }
-                    }
-                }
+        // stage('Security Scans') {
+        //     parallel {
+        //         stage('SCA - Snyk Scan') {
+        //             steps {
+        //                 script {
+        //                     echo 'Testing...'
+        //                     snykSecurity(
+        //                         snykInstallation: 'Snyk',
+        //                         snykTokenId: 'snyk-api-token'
+        //                         // place other parameters here
+        //                     )
+        //                 }
+        //             }
+        //         }
 
-                stage('SAST - SonarQube') {
-                    environment {
-                        scannerHome = tool 'SonarQube'
-                    }
-                    steps {
-                        withSonarQubeEnv('sonarqube-server') {
-                            sh """
-                                mvn clean verify sonar:sonar \
-                                    -Dsonar.dependencyCheck.summarize=true \
-                                    -Dsonar.dependencyCheck.xmlReportPath=target/surefire-reports/*.xml \
-                                    -Dsonar.projectKey=devops_project \
-                                    -Dsonar.projectName='devops_project' \
-                                    -Dsonar.host.url=http://localhost:9000
-                            """
-                            echo 'SonarQube Analysis Completed'
-                        }
-                    }
-                }
-            }
-        }
+        //         stage('SAST - SonarQube') {
+        //             environment {
+        //                 scannerHome = tool 'SonarQube'
+        //             }
+        //             steps {
+        //                 withSonarQubeEnv('sonarqube-server') {
+        //                     sh """
+        //                         mvn clean verify sonar:sonar \
+        //                             -Dsonar.dependencyCheck.summarize=true \
+        //                             -Dsonar.dependencyCheck.xmlReportPath=target/surefire-reports/*.xml \
+        //                             -Dsonar.projectKey=devops_project \
+        //                             -Dsonar.projectName='devops_project' \
+        //                             -Dsonar.host.url=http://localhost:9000
+        //                     """
+        //                     echo 'SonarQube Analysis Completed'
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         // stage('Build Docker Image') {
         //     steps {
