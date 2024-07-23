@@ -77,26 +77,37 @@ pipeline {
         //     }
         // }
 
-        // stage('Build Docker Image') {
-        //     steps {
-        //         script {
-        //             docker.build("${DOCKER_IMAGE}", "-f backend-service.dockerfile .")
-        //         }
-        //     }
-        // }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("${DOCKER_IMAGE}", "-f backend-service.dockerfile .")
+                }
+            }
+        }
 
-        // stage('Push Docker Image') {
-        //     steps {
-        //         script {
-        //             withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-        //                 sh "echo ${dockerHubPassword} | docker login -u ${dockerHubUser} --password-stdin"
-        //                 sh "docker tag ${DOCKER_IMAGE} ${dockerHubUser}/${DOCKER_REPOSITORY_NAME}:${BUILD_NUMBER}"
-        //                 sh "docker push ${dockerHubUser}/${DOCKER_REPOSITORY_NAME}:${BUILD_NUMBER}"
-        //                 sh 'docker logout'
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Container Secuirty Analysis - Trivy Scan') {
+            steps {
+                script {
+                    sh "curl -sOL https://github.com/aquasecurity/trivy/releases/download/v0.53.0/trivy_0.53.0_Linux-64bit.tar.gz" 
+                    sh "tar -xvf trivy_0.53.0_Linux-64bit.tar.gz"
+                    sh "trivy --config config/.trivy.yaml ${DOCKER_IMAGE}"
+                    archiveArtifacts 'trivy_result.txt'
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+                        sh "echo ${dockerHubPassword} | docker login -u ${dockerHubUser} --password-stdin"
+                        sh "docker tag ${DOCKER_IMAGE} ${dockerHubUser}/${DOCKER_REPOSITORY_NAME}:${BUILD_NUMBER}"
+                        sh "docker push ${dockerHubUser}/${DOCKER_REPOSITORY_NAME}:${BUILD_NUMBER}"
+                        sh 'docker logout'
+                    }
+                }
+            }
+        }
 
         // stage('Deploy') {
         //     steps {

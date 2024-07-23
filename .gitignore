@@ -35,3 +35,4 @@ build/
 trivy_result.txt
 hadolint_result.txt
 venv
+detect-secrets.json
