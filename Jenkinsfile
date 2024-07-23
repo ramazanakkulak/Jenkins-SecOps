@@ -25,7 +25,7 @@ pipeline {
                 steps {
                     sh '''
                     virtualenv venv && . venv/bin/activate && pip install detect-secrets &&
-                    detect-secrets scan --all-files --force-use-all-plugins > detect-secrets.json
+                    detect-secrets scan . > detect-secrets.json
                     '''
                     archiveArtifacts 'detect-secrets.json'
                 }
