@@ -24,13 +24,6 @@ This project contains a Java Spring Boot and PostgreSQL application containerize
 - SAST (Static Application Security Testing)
 - SCA (Software Composition Analysis)
   
-## Kullanılan Teknolojiler
-
-**İstemci:** React, Redux, TailwindCSS
-
-**Sunucu:** Node, Express
-
-  
 ## Installation
 
 Clone the project:
