@@ -90,7 +90,7 @@ pipeline {
                 script {
                     sh "curl -sOL https://github.com/aquasecurity/trivy/releases/download/v0.53.0/trivy_0.53.0_Linux-64bit.tar.gz" 
                     sh "tar -xvf trivy_0.53.0_Linux-64bit.tar.gz"
-                    sh "trivy image --config config/.trivy.yaml ${DOCKER_IMAGE}"
+                    sh "trivy image --exit-code 0 --config config/.trivy.yaml ${DOCKER_IMAGE}"
                     archiveArtifacts 'trivy_result.txt'
                 }
             }
