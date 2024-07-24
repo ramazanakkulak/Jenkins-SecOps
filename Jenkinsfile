@@ -85,37 +85,37 @@ pipeline {
             }
         }
 
-        stage('Container Secuirty Analysis - Trivy Scan') {
-            steps {
-                script {
-                    sh "curl -sOL https://github.com/aquasecurity/trivy/releases/download/v0.53.0/trivy_0.53.0_Linux-64bit.tar.gz" 
-                    sh "tar -xvf trivy_0.53.0_Linux-64bit.tar.gz"
-                    sh "trivy image --exit-code 0 --config config/.trivy.yaml ${DOCKER_IMAGE}"
-                    archiveArtifacts 'trivy_result.txt'
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-                        sh "echo ${dockerHubPassword} | docker login -u ${dockerHubUser} --password-stdin"
-                        sh "docker tag ${DOCKER_IMAGE} ${dockerHubUser}/${DOCKER_REPOSITORY_NAME}:${BUILD_NUMBER}"
-                        sh "docker push ${dockerHubUser}/${DOCKER_REPOSITORY_NAME}:${BUILD_NUMBER}"
-                        sh 'docker logout'
-                    }
-                }
-            }
-        }
-
-        // stage('Deploy') {
+        // stage('Container Secuirty Analysis - Trivy Scan') {
         //     steps {
-        //         // Docker-compose kullanarak uygulamanın dağıtılması
-        //         sh 'docker-compose down'
-        //         sh 'docker-compose up -d'
+        //         script {
+        //             sh "curl -sOL https://github.com/aquasecurity/trivy/releases/download/v0.53.0/trivy_0.53.0_Linux-64bit.tar.gz" 
+        //             sh "tar -xvf trivy_0.53.0_Linux-64bit.tar.gz"
+        //             sh "trivy image --exit-code 0 --config config/.trivy.yaml ${DOCKER_IMAGE}"
+        //             archiveArtifacts 'trivy_result.txt'
+        //         }
         //     }
         // }
+
+        // stage('Push Docker Image') {
+        //     steps {
+        //         script {
+        //             withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
+        //                 sh "echo ${dockerHubPassword} | docker login -u ${dockerHubUser} --password-stdin"
+        //                 sh "docker tag ${DOCKER_IMAGE} ${dockerHubUser}/${DOCKER_REPOSITORY_NAME}:${BUILD_NUMBER}"
+        //                 sh "docker push ${dockerHubUser}/${DOCKER_REPOSITORY_NAME}:${BUILD_NUMBER}"
+        //                 sh 'docker logout'
+        //             }
+        //         }
+        //     }
+        // }
+
+        stage('Deploy Dev Stage') {
+            steps {
+                // Docker-compose kullanarak uygulamanın dağıtılması
+                sh 'docker-compose down'
+                sh "MY_IMAGE=${DOCKER_IMAGE} docker-compose up -d"
+            }
+        }
     }
 
     post {
