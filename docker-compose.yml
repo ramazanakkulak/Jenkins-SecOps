@@ -16,7 +16,7 @@ services:
     depends_on:
       - postgresqldb
     networks:
-      - devops_project
+      - ndev
     deploy:
         mode: replicated
         replicas: 1
@@ -32,14 +32,13 @@ services:
     volumes:
       - postgresqldb_data:/var/lib/postgresql/data
     networks:
-      - devops_project
+      - ndev
     deploy:
         mode: replicated
         replicas: 1
 
 networks:
-  devops_project:
-    name: devops_project
+  ndev:
     driver: bridge
 
 volumes:
