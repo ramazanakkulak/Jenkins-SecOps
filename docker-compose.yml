@@ -11,6 +11,12 @@ services:
       project: Spring Boot and Postgres
       version: 1.0.0
       type: backend
+    environment:
+      PSQL_DB_HOST: postgresqldb
+      PSQL_DB_PORT: 5432
+      PSQL_DB_NAME: postgres
+      PSQL_DB_USER: postgres
+      PSQL_DB_PASSWORD: admin
     ports:
       - "8081:8081"
     depends_on:

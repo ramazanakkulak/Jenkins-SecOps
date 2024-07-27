@@ -1,0 +1,8 @@
+images:
+  spring_boot_app: spring-boot-app:76
+  postgres: postgres:16
+postgres:
+  username: postgres
+  password: postgres
+  db_name: postgres
+  admin_password: postgres
