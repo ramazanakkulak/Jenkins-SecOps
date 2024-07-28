@@ -131,7 +131,7 @@ pipeline {
                     script {
                         sh "eval $(minikube docker-env)"
                         sh "helm list"
-                        sh "helm install mywebapp-release ./k8s --set spring_boot_app=spring-boot-app:${DOCKER_IMAGE}"
+                        sh "helm install mywebapp-release ./k8s --set images.spring_boot_app=spring-boot-app:${DOCKER_IMAGE}"
                         sh "helm upgrade mywebapp-release ./k8s --set images.spring_boot_app=spring-boot-app:${DOCKER_IMAGE}"
                     }
                 }
