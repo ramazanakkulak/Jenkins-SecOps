@@ -1,6 +1,6 @@
 # Jenkins-SecOps
 
-![IMAGE](./doc/picture1.svg)
+![IMAGE](./doc/p1.svg)
 
 This project contains a Java Spring Boot and PostgreSQL application containerized with Docker running on Kubernetes. Additionally, a SecOps pipeline was established within the project using Jenkins.
 
@@ -12,7 +12,7 @@ This project contains a Java Spring Boot and PostgreSQL application containerize
 
 ## Demo
 
-![IMAGE](./doc/picture2.png)
+![IMAGE](./doc/p2.png)
 
   
 ## Security

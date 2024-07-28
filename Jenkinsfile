@@ -5,6 +5,7 @@ pipeline {
         // Ortak ortam değişkenleri burada tanımlanabilir
         DOCKER_IMAGE = "spring-boot-app:${env.BUILD_NUMBER}"
         DOCKER_REPOSITORY_NAME = "spring-boot-app"
+        DOCKER_HUB= "wellpast"
     }
 
     stages {
@@ -35,7 +36,6 @@ pipeline {
 
         stage('Build') {
             steps {
-                // Maven ile projenin derlenmesi ve testlerin çalıştırılması
                 sh 'mvn clean package -DskipTests'
                 archiveArtifacts 'target/*.jar'
             }
@@ -111,7 +111,6 @@ pipeline {
 
         stage('Deploy Dev Stage on docker') {
             steps {
-                // Docker-compose kullanarak uygulamanın dağıtılması
                 sh "docker-compose down"
                 sh "MY_IMAGE=${DOCKER_IMAGE} docker-compose up -d"
             }
@@ -130,10 +129,10 @@ pipeline {
                 ]) {
                     script {
                         try {
-                            sh "helm install mywebapp-release ./k8s --set images.spring_boot_app=wellpast/${DOCKER_IMAGE}"
+                            sh "helm install mywebapp-release ./k8s --set images.spring_boot_app=${DOCKER_HUB}/${DOCKER_IMAGE}"
                         } catch (Exception e) {
                             echo "Installation failed, performing upgrade instead"
-                            sh "helm upgrade mywebapp-release ./k8s --set images.spring_boot_app=wellpast/${DOCKER_IMAGE}"
+                            sh "helm upgrade mywebapp-release ./k8s --set images.spring_boot_app=${DOCKER_HUB}/${DOCKER_IMAGE}"
                         }
                     }
                 }

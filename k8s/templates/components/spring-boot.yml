@@ -32,7 +32,7 @@ spec:
         image: {{ .Values.images.spring_boot_app }}
         imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 8080
+        - containerPort: 8081
           name: http
         env:
         - name: PSQL_DB_HOST
