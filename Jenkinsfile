@@ -109,11 +109,32 @@ pipeline {
             }
         }
 
-        stage('Deploy Dev Stage') {
+        stage('Deploy Dev Stage on docker') {
             steps {
                 // Docker-compose kullanarak uygulamanın dağıtılması
                 sh "docker-compose down"
                 sh "MY_IMAGE=${DOCKER_IMAGE} docker-compose up -d"
+            }
+        }
+        stage('Approve Deployment') {
+            steps {
+                script {
+                    input message: 'Do you approve the deployment to the production environment? This will deploy the latest version of the application to the Kubernetes cluster.', ok: 'Deploy'
+                }
+            }
+        }
+        stage('Deploy Prod Stage on k8s') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'tokenk8s', variable: 'api_token')
+                ]) {
+                    script {
+                        sh "eval $(minikube docker-env)"
+                        sh "helm list"
+                        sh "helm install mywebapp-release ./k8s --set spring_boot_app=spring-boot-app:${DOCKER_IMAGE}"
+                        sh "helm upgrade mywebapp-release ./k8s --set images.spring_boot_app=spring-boot-app:${DOCKER_IMAGE}"
+                    }
+                }
             }
         }
     }

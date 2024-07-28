@@ -1,5 +1,5 @@
 images:
-  spring_boot_app: spring-boot-app:76
+  spring_boot_app: spring-boot-app #:tag for example spring-boot-app:76
   postgres: postgres:16
 postgres:
   username: postgres
