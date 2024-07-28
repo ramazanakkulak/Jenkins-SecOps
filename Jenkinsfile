@@ -129,9 +129,12 @@ pipeline {
                     string(credentialsId: 'tokenk8s', variable: 'api_token')
                 ]) {
                     script {
-                        sh "helm list"
-                        sh "helm install mywebapp-release ./k8s --set images.spring_boot_app=wellpast/spring-boot-app:${DOCKER_IMAGE}"
-                        sh "helm upgrade mywebapp-release ./k8s --set images.spring_boot_app=wellpast/pring-boot-app:${DOCKER_IMAGE}"
+                        try {
+                            sh "helm install mywebapp-release ./k8s --set images.spring_boot_app=wellpast/spring-boot-app:${DOCKER_IMAGE}"
+                        } catch (Exception e) {
+                            echo "Installation failed, performing upgrade instead"
+                            sh "helm upgrade mywebapp-release ./k8s --set images.spring_boot_app=wellpast/spring-boot-app:${DOCKER_IMAGE}"
+                        }
                     }
                 }
             }
