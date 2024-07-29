@@ -81,6 +81,7 @@ Install the necessary dependencies:
 
 
 - 5- We need to install Minikube - k8s.
+
   [Minikube Installation Guide](https://minikube.sigs.k8s.io/docs/)
 
 - 6- We need to install SonarQube.
