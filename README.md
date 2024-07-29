@@ -17,12 +17,11 @@ This project contains a Java Spring Boot and PostgreSQL application containerize
   
 ## Security
 
-- CSA (Container Security Assessment)
-- DAST (Dynamic Application Security Testing)
-- JUNIT (Java Testing Framework)
 - Pre-commit Secret Detection
+- JUNIT (Java Testing Framework)
 - SAST (Static Application Security Testing)
 - SCA (Software Composition Analysis)
+- CSA (Container Security Assessment)
   
 ## Installation
 
@@ -43,7 +42,10 @@ Install the necessary dependencies:
 ```bash
   mvn package
 ```
-  
+
+## Step by Step Installation
+
+
 ## Lisans
 
 [MIT](https://choosealicense.com/licenses/mit/)
